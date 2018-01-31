@@ -32,8 +32,8 @@ def partition(a):
 
 # Generate random arrays and call check function on them.
 def test_on_arrays(check):
-    for _ in range(1):
-        n = randrange(1, 10)
+    for _ in range(1000):
+        n = randrange(1, 1000)
         a = [randrange(500) for _ in range(n) ]
         check(a)
 
@@ -52,18 +52,17 @@ def check_partition(a):
 
 # Sort an array a using quicksort.
 def quicksort(a):
-    print("quicksort", a)
     if len(a) <= 1:
-        return
+        return a
     m = partition(a)
-    quicksort(a[:m-1])
-    quicksort(a[m:])
-    print("result", m, a)
+    left = quicksort(a[:m-1])
+    right = quicksort(a[m:])
+    return left + [a[m-1]] + right
 
 # Check quicksort of array a.
 def check_quicksort(a):
     expected = sorted(list(a))
-    quicksort(a)
+    a = quicksort(a)
     if a != expected:
         print("quicksort mismatch", a, expected)
         exit(1)
