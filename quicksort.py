@@ -5,46 +5,68 @@ from random import randrange
 
 # Quicksort
 
+# Array a must have at least 1 element.
 # Rearrange a so that all elements <= a[0]
-# are before position m. Return m.
+# are before position m with a[0] at position m - 1.
+# Return m.
 def partition(a):
-    print("*input", a)
     n = len(a)
+    assert n > 0
     left = 1
     right = n - 1
     i = 0
     while True:
         i += 1
-        print("step", i, left, right)
         while left < right and a[left] <= a[0]:
             left += 1
-        print("  left", left, right)
         while right > left and a[right] > a[0]:
             right -= 1
-        print("  right", left, right)
         if left >= right:
             if left < n and a[left] <= a[0]:
                 left += 1
-            print("* return", left, right)
+            a[0], a[left-1] = a[left-1], a[0]
             return left
         a[left], a[right] = a[right], a[left]
         left += 1
         right -= 1
 
-# Generate random arrays, partition them
-# and check
-def test_partition():
-    for _ in range(100):
+# Generate random arrays and call check function on them.
+def test_on_arrays(check):
+    for _ in range(1):
         n = randrange(1, 10)
         a = [randrange(500) for _ in range(n) ]
-        m = partition(a)
-        for i in range(m):
-            if a[i] > a[0]:
-                print("failed low", m, a)
-                exit(1)
-        for i in range(m, n):
-            if a[i] <= a[0]:
-                print("failed high", m, a)
-                exit(1)
+        check(a)
 
-test_partition()
+# Check partitioning of array a.
+def check_partition(a):
+    m = partition(a)
+    for i in range(m):
+        if a[i] > a[m-1]:
+            print("failed low", m, a)
+            exit(1)
+    for i in range(m, len(a)):
+        if a[i] <= a[m-1]:
+            print("failed high", m, a)
+            exit(1)
+
+
+# Sort an array a using quicksort.
+def quicksort(a):
+    print("quicksort", a)
+    if len(a) <= 1:
+        return
+    m = partition(a)
+    quicksort(a[:m-1])
+    quicksort(a[m:])
+    print("result", m, a)
+
+# Check quicksort of array a.
+def check_quicksort(a):
+    expected = sorted(list(a))
+    quicksort(a)
+    if a != expected:
+        print("quicksort mismatch", a, expected)
+        exit(1)
+    
+test_on_arrays(check_partition)
+test_on_arrays(check_quicksort)
