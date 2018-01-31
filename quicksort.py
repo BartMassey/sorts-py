@@ -9,22 +9,19 @@ from random import randrange
 # Rearrange a so that all elements <= a[0]
 # are before position m with a[0] at position m - 1.
 # Return m.
-def partition(a):
-    n = len(a)
-    assert n > 0
-    left = 1
-    right = n - 1
-    i = 0
+def partition(a, start, end):
+    assert end - start > 0
+    left = start + 1
+    right = end - 1
     while True:
-        i += 1
-        while left < right and a[left] <= a[0]:
+        while left < right and a[left] <= a[start]:
             left += 1
-        while right > left and a[right] > a[0]:
+        while right > left and a[right] > a[start]:
             right -= 1
         if left >= right:
-            if left < n and a[left] <= a[0]:
+            if left < end and a[left] <= a[start]:
                 left += 1
-            a[0], a[left-1] = a[left-1], a[0]
+            a[start], a[left-1] = a[left-1], a[start]
             return left
         a[left], a[right] = a[right], a[left]
         left += 1
@@ -39,7 +36,7 @@ def test_on_arrays(check):
 
 # Check partitioning of array a.
 def check_partition(a):
-    m = partition(a)
+    m = partition(a, 0, len(a))
     for i in range(m):
         if a[i] > a[m-1]:
             print("failed low", m, a)
@@ -54,7 +51,7 @@ def check_partition(a):
 def quicksort(a):
     if len(a) <= 1:
         return a
-    m = partition(a)
+    m = partition(a, 0, len(a))
     left = quicksort(a[:m-1])
     right = quicksort(a[m:])
     return left + [a[m-1]] + right
