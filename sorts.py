@@ -3,7 +3,7 @@
 
 from random import randrange
 
-# Quicksort
+# Some sorts: Quicksort, Heapsort
 
 # Array a must have at least 1 element.
 # Rearrange a so that all elements <= a[0]
@@ -64,5 +64,40 @@ def check_quicksort(a):
         print("quicksort mismatch", a, expected)
         exit(1)
     
+# Downheap maxheap a starting at position i.
+def downheap(a, i=0):
+    n = len(a)
+    while True:
+        left = 2 * i + 1
+        right = 2 * i + 2
+        nexti = i
+        if left < n and a[left] > a[nexti]:
+            nexti = left
+        if right < n and a[right] > a[nexti]:
+            nexti = right
+        if nexti == i:
+            return
+        a[i], a[nexti] = a[nexti], a[i]
+        i = nexti
+
+# Make a into a heap.
+def heapify(a):
+    n = len(a)
+    for i in reversed(range((n-2) // 2 + 1)):
+        downheap(a, i)
+
+# Check heapify of array a.
+def check_heapify(a):
+    n = len(a)
+    heapify(a)
+    for i in range(n):
+        left = 2 * i + 1
+        if left < n:
+            assert a[i] >= a[left]
+        right = 2 * i + 2
+        if right < n:
+            assert a[i] >= a[right]
+
 test_on_arrays(check_partition)
 test_on_arrays(check_quicksort)
+test_on_arrays(check_heapify)
