@@ -56,35 +56,39 @@ def quicksort(a, start=0, end=None):
     quicksort(a, start, m-1)
     quicksort(a, m, end)
 
-# Check quicksort of array a.
-def check_quicksort(a):
-    expected = sorted(list(a))
-    quicksort(a)
-    if a != expected:
-        print("quicksort mismatch", a, expected)
-        exit(1)
+# Check sort of array a.
+def check_sort(sortname, sort):
+    def check(a):
+        expected = sorted(list(a))
+        sort(a)
+        if a != expected:
+            print(sortname, "mismatch", a, expected)
+            exit(1)
+    return check
     
 # Downheap maxheap a starting at position i.
-def downheap(a, i=0):
+def downheap(a, start=0, end=None):
     n = len(a)
+    if end == None:
+        end = n
     while True:
-        left = 2 * i + 1
-        right = 2 * i + 2
-        nexti = i
-        if left < n and a[left] > a[nexti]:
+        left = 2 * start + 1
+        right = 2 * start + 2
+        nexti = start
+        if left < end and a[left] > a[nexti]:
             nexti = left
-        if right < n and a[right] > a[nexti]:
+        if right < end and a[right] > a[nexti]:
             nexti = right
-        if nexti == i:
+        if nexti == start:
             return
-        a[i], a[nexti] = a[nexti], a[i]
-        i = nexti
+        a[start], a[nexti] = a[nexti], a[start]
+        start = nexti
 
 # Make a into a heap.
 def heapify(a):
     n = len(a)
     for i in reversed(range((n-2) // 2 + 1)):
-        downheap(a, i)
+        downheap(a, start=i)
 
 # Check heapify of array a.
 def check_heapify(a):
@@ -98,6 +102,15 @@ def check_heapify(a):
         if right < n:
             assert a[i] >= a[right]
 
+# Heapsort
+def heapsort(a):
+    n = len(a)
+    heapify(a)
+    for dest in reversed(range(1, n)):
+        a[dest], a[0] = a[0], a[dest]
+        downheap(a, end=dest)
+
 test_on_arrays(check_partition)
-test_on_arrays(check_quicksort)
+test_on_arrays(check_sort("quicksort", quicksort))
 test_on_arrays(check_heapify)
+test_on_arrays(check_sort("heapsort", heapsort))
