@@ -46,20 +46,20 @@ def check_partition(a):
             print("failed high", m, a)
             exit(1)
 
-
 # Sort an array a using quicksort.
-def quicksort(a):
-    if len(a) <= 1:
-        return a
-    m = partition(a, 0, len(a))
-    left = quicksort(a[:m-1])
-    right = quicksort(a[m:])
-    return left + [a[m-1]] + right
+def quicksort(a, start=0, end=None):
+    if end == None:
+        end = len(a)
+    if end - start <= 1:
+        return
+    m = partition(a, start, end)
+    quicksort(a, start, m-1)
+    quicksort(a, m, end)
 
 # Check quicksort of array a.
 def check_quicksort(a):
     expected = sorted(list(a))
-    a = quicksort(a)
+    quicksort(a)
     if a != expected:
         print("quicksort mismatch", a, expected)
         exit(1)
