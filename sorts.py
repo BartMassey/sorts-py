@@ -10,7 +10,7 @@ import time
 # Some sorts: Quicksort, Heapsort
 
 # Constants for array testing.
-arrays_count = 100
+arrays_count = 10
 arrays_len = 1000
 arrays_range = 500
 
@@ -139,14 +139,12 @@ def heapsort(a):
         a[dest], a[0] = a[0], a[dest]
         downheap(a, end=dest)
 
-if len(sys.argv) > 1 and sys.argv[1] == "test":
-    test_on_arrays(lambda a: check_partition(a, m3=True))
-    test_on_arrays(lambda a: check_partition(a, m3=False))
-    test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=True)))
-    test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=False)))
-    test_on_arrays(check_heapify)
-    test_on_arrays(check_sort("heapsort", heapsort))
-    exit(0)
+test_on_arrays(lambda a: check_partition(a, m3=True))
+test_on_arrays(lambda a: check_partition(a, m3=False))
+test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=True)))
+test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=False)))
+test_on_arrays(check_heapify)
+test_on_arrays(check_sort("heapsort", heapsort))
 
 # Benchmark a given sort by passing arrays of doubling size
 # until runtime exceeds 5s. Write this info into logfile
