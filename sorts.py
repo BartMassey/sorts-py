@@ -4,6 +4,8 @@
 # the file LICENSE in this distribution for license terms.
 
 from random import randrange
+import sys
+import time
 
 # Some sorts: Quicksort, Heapsort
 
@@ -137,9 +139,40 @@ def heapsort(a):
         a[dest], a[0] = a[0], a[dest]
         downheap(a, end=dest)
 
-test_on_arrays(lambda a: check_partition(a, m3=True))
-test_on_arrays(lambda a: check_partition(a, m3=False))
-test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=True)))
-test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=False)))
-test_on_arrays(check_heapify)
-test_on_arrays(check_sort("heapsort", heapsort))
+if len(sys.argv) > 1 and sys.argv[1] == "test":
+    test_on_arrays(lambda a: check_partition(a, m3=True))
+    test_on_arrays(lambda a: check_partition(a, m3=False))
+    test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=True)))
+    test_on_arrays(check_sort("quicksort", lambda a: quicksort(a, m3=False)))
+    test_on_arrays(check_heapify)
+    test_on_arrays(check_sort("heapsort", heapsort))
+    exit(0)
+
+# Benchmark a given sort by passing arrays of doubling size
+# until runtime exceeds 5s. Write this info into logfile
+# for future graphing.
+def bench(sortname, sort):
+
+    # Get wall-clock time of run of sort on a.
+    def runtime(a):
+        start_time = time.perf_counter()
+        sort(a)
+        end_time = time.perf_counter()
+        return end_time - start_time
+
+    # Produce the trace.
+    print(sortname + ":", flush=True, end="")
+    with open(sortname + ".plot", "w") as log:
+        n = 1
+        t = runtime([0])
+        while t < 5.0:
+            n *= 2
+            a = [randrange(n//2) for _ in range(n) ]
+            print("", n, flush=True, end="")
+            t = runtime(a)
+            print(n, t, file=log)
+        print()
+
+bench("heapsort", heapsort)
+bench("quicksort-m3", lambda a: quicksort(a, m3=True))
+bench("quicksort-m", lambda a: quicksort(a, m3=False))
