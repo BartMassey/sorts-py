@@ -47,9 +47,16 @@ def partition(a, start, end, m3=True):
     left = start + 1
     right = end - 1
     while True:
+        while True:
+            if left >= right or a[left] > a[start]:
+                break
+            left += 1
+            if left >= right or a[right] <= a[start]:
+                break
+            right -= 1
         while left < right and a[left] <= a[start]:
             left += 1
-        while right > left and a[right] > a[start]:
+        while left < right and a[right] > a[start]:
             right -= 1
         if left >= right:
             if a[left] > a[start]:
