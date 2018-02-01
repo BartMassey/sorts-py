@@ -7,9 +7,14 @@ from random import randrange
 
 # Some sorts: Quicksort, Heapsort
 
+# Constants for array testing.
+arrays_count = 100
+arrays_len = 1000
+arrays_range = 500
+
 # Array a must have at least 1 element.
 # Rearrange a so that all elements <= a[0]
-# are before position m with a[0] at position m - 1.
+# are before position m with a[0] at position m.
 # Return m.
 def partition(a, start, end):
     assert end - start > 0
@@ -21,9 +26,9 @@ def partition(a, start, end):
         while right > left and a[right] > a[start]:
             right -= 1
         if left >= right:
-            if left < end and a[left] <= a[start]:
-                left += 1
-            a[start], a[left-1] = a[left-1], a[start]
+            if left > start and a[left] > a[start]:
+                left -= 1
+            a[start], a[left] = a[left], a[start]
             return left
         a[left], a[right] = a[right], a[left]
         left += 1
@@ -31,20 +36,20 @@ def partition(a, start, end):
 
 # Generate random arrays and call check function on them.
 def test_on_arrays(check):
-    for _ in range(1000):
-        n = randrange(1, 1000)
-        a = [randrange(500) for _ in range(n) ]
+    for _ in range(arrays_count):
+        n = randrange(1, arrays_len)
+        a = [randrange(arrays_range) for _ in range(n) ]
         check(a)
 
 # Check partitioning of array a.
 def check_partition(a):
     m = partition(a, 0, len(a))
     for i in range(m):
-        if a[i] > a[m-1]:
+        if a[i] > a[m]:
             print("failed low", m, a)
             exit(1)
-    for i in range(m, len(a)):
-        if a[i] <= a[m-1]:
+    for i in range(m + 1, len(a)):
+        if a[i] <= a[m]:
             print("failed high", m, a)
             exit(1)
 
@@ -55,8 +60,8 @@ def quicksort(a, start=0, end=None):
     if end - start <= 1:
         return
     m = partition(a, start, end)
-    quicksort(a, start, m-1)
-    quicksort(a, m, end)
+    quicksort(a, start, m)
+    quicksort(a, m + 1, end)
 
 # Check sort of array a.
 def check_sort(sortname, sort):
