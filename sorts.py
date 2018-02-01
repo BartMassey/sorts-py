@@ -22,7 +22,11 @@ arrays_range = 500
 # first, middle and last element.
 def partition(a, start, end, m3=True):
     # No pivot is possible in 0-length arrays.
-    assert end - start > 0
+    n = end - start
+    assert n > 0
+    # For length 1 arrays, just do the obvious.
+    if n == 1:
+        return 0
 
     # Pick a pivot and swap it to the start position.
     mid_index = start + (end - start) // 2
